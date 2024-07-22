@@ -122,7 +122,7 @@ void testHttpHandler() {
 void startHttpServer() {
     using namespace integration_win;
 
-    std::cout << "Hosting Server" << std::endl;
+    std::cout << "hosting server on port 8000. This will echo the JSON struct PersonId in TestHandler for a post request." << std::endl;
 
     SimpleWinServer<10> server = SimpleWinServer<10>(8000);
 

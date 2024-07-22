@@ -7,7 +7,7 @@
 // Lib
 #include "future.h"
 
-// TODO
+// NOT FINISHED!!!!!!
 
 namespace arduino_integration {
 
