@@ -291,7 +291,7 @@ class ReadWhile : public ReadFuture<ReadWhile<F>, void_> {
         while (true) {
             switch (state) {
                 case State::PEEK:
-                peek : {
+                peek: {
                     Poll<Optional<char>> poll = peek->poll();
                     if (poll.isPending()) {
                         return Poll<void_>::pending();
@@ -644,7 +644,7 @@ class ReadNumber : public ReadFuture<ReadNumber, Optional<double>> {
                 peek = reader->peek();
             }
             case State::PEEK_DECIMAL:
-            peekDecimal : {
+            peekDecimal: {
                 Poll<Optional<char>> poll = peek->poll();
                 if (poll.isPending()) {
                     return Poll<Optional<double>>::pending();
@@ -658,7 +658,7 @@ class ReadNumber : public ReadFuture<ReadNumber, Optional<double>> {
 
                 char c = opt.get();
                 if (!((c >= '0' && c <= '9') || c == '-' || c == '.')) {
-                    if (number == 0) {
+                    if (!hasValue) {
                         return Poll<Optional<double>>::ready(
                             Optional<double>::empty());
                     } else {
@@ -687,6 +687,8 @@ class ReadNumber : public ReadFuture<ReadNumber, Optional<double>> {
 
                 char c = opt.get();
                 if (c >= '0' && c <= '9') {
+                    hasValue = true;
+
                     int digit = c - '0';
                     number = number * 10 + digit;
 
@@ -708,13 +710,15 @@ class ReadNumber : public ReadFuture<ReadNumber, Optional<double>> {
                     peek = reader->peek();
                     goto peekDecimal;
                 } else if (c == '.') {
+                    hasValue = true;
+
                     state = State::PEEK_FRACTION;
 
                     Reader *reader = readChar.getReader();
                     peek = reader->peek();
                     // Fallthrough
                 } else {
-                    if (number == 0) {
+                    if (!hasValue) {
                         return Poll<Optional<double>>::ready(
                             Optional<double>::empty());
                     }
@@ -723,7 +727,7 @@ class ReadNumber : public ReadFuture<ReadNumber, Optional<double>> {
                 }
             }
             case State::PEEK_FRACTION:
-            peekFraction : {
+            peekFraction: {
                 Poll<Optional<char>> poll = peek->poll();
                 if (poll.isPending()) {
                     return Poll<Optional<double>>::pending();
@@ -796,6 +800,7 @@ class ReadNumber : public ReadFuture<ReadNumber, Optional<double>> {
         READ_FRACTION,
     } state = State::INIT;
 
+    bool hasValue = false;
     bool negative = false;
     double number = 0;
     double fractionMultiply = 0.1;
