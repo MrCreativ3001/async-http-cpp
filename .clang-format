@@ -1,0 +1,6 @@
+---
+BasedOnStyle: Google
+AlwaysBreakTemplateDeclarations: 'Yes'
+IndentWidth: 4
+
+...

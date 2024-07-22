@@ -1,0 +1,13 @@
+# Intellij
+.idea
+
+#VSCode
+.vscode
+
+# CMake
+.cache
+build
+
+# Old
+old
+old2
